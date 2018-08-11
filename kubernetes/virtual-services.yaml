@@ -1,0 +1,48 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: deernation-gateway
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: frontend
+spec:
+  gateways:
+  - deernation-gateway
+  - mesh
+  hosts:
+  - "*"
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: frontend
+  - match:
+    - uri:
+        prefix: /socketcluster
+    route:
+    - destination:
+        host: backend
+    websocketUpgrade: true
+  - match:
+    - uri:
+        prefix: /ratel
+    - headers:
+        cookie:
+          regex: "^(.*?;)?(user=admin)(;.*)?$"
+    route:
+    - destination:
+        host: dgraph-ratel

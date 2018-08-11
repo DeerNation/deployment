@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: backend
+        version: v1
+    spec:
+      containers:
+      - name: backend
+        image: deernation/backend:latest
+        ports:
+        - containerPort: 6878
+        env:
+        - name: SCC_STATE_SERVER_HOST
+          value: scc-state
+        - name: SOCKETCLUSTER_WORKERS
+          value: "1"
+        - name: SOCKETCLUSTER_BROKERS
+          value: "1"
+        - name: SCC_INSTANCE_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: ENV
+          value: prod
+        - name: DN_DGRAPH_HOST
+          value: dgraph-server
+        - name: DN_FCM_KEY
+          valueFrom:
+            secretKeyRef:
+              name: dn-secret
+              key: fcmkey
+        livenessProbe:
+          httpGet:
+            path: /health-check
+            port: 6878
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - backend
+            topologyKey: "kubernetes.io/hostname"
