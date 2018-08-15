@@ -8,6 +8,5 @@ spec:
   ports:
   - port: 7777
     targetPort: 7777
-    name: http-state
   selector:
     app: scc-state

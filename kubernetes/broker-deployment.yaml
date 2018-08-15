@@ -8,7 +8,6 @@ spec:
     metadata:
       labels:
         app: scc-broker
-        version: v6.0.1
     spec:
       containers:
       - name: scc-broker
@@ -17,7 +16,7 @@ spec:
         - containerPort: 8888
         env:
         - name: SCC_STATE_SERVER_HOST
-          value: scc-state
+          value: scc-state.default.svc.cluster.local
         - name: SOCKETCLUSTER_WORKERS
           value: "1"
         - name: SOCKETCLUSTER_BROKERS

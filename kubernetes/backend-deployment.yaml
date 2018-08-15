@@ -8,7 +8,6 @@ spec:
     metadata:
       labels:
         app: backend
-        version: v1
     spec:
       containers:
       - name: backend
@@ -26,8 +25,6 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.podIP
-        - name: ENV
-          value: prod
         - name: DN_DGRAPH_HOST
           value: dgraph-server
         - name: DN_FCM_KEY

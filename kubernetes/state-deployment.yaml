@@ -8,7 +8,6 @@ spec:
     metadata:
       labels:
         app: scc-state
-        version: v6.1.0
     spec:
       containers:
       - name: scc-state

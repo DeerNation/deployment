@@ -26,12 +26,6 @@ spec:
   http:
   - match:
     - uri:
-        prefix: /
-    route:
-    - destination:
-        host: frontend
-  - match:
-    - uri:
         prefix: /socketcluster
     route:
     - destination:
@@ -39,10 +33,7 @@ spec:
     websocketUpgrade: true
   - match:
     - uri:
-        prefix: /ratel
-    - headers:
-        cookie:
-          regex: "^(.*?;)?(user=admin)(;.*)?$"
+        prefix: /
     route:
     - destination:
-        host: dgraph-ratel
+        host: frontend

@@ -14,7 +14,6 @@ spec:
   ports:
   - port: 5080
     targetPort: 5080
-    name: grpc-zero
   clusterIP: None
   selector:
     app: dgraph-zero
@@ -31,13 +30,13 @@ spec:
   ports:
   - port: 9080
     targetPort: 9080
-    name: grpc-server
+    name: server-grpc
   - port: 7080
     targetPort: 7080
-    name: grpc-int
+    name: internal-grpc
   - port: 8080
     targetPort: 8080
-    name: http-server
+    name: server-http
   clusterIP: None
   selector:
     app: dgraph-server
@@ -54,7 +53,6 @@ spec:
   ports:
   - port: 8000
     targetPort: 8000
-    name: http-ratel
   clusterIP: None
   selector:
     app: dgraph-ratel
@@ -114,7 +112,7 @@ spec:
           if [[ $ordinal -eq 0 ]]; then
             dgraph zero --my=$(hostname -f):5080 --idx $idx --replicas 1
           else
-            dgraph zero --my=$(hostname -f):5080 --peer dgraph-zero-0.dgraph-zero.deernation.svc.cluster.local:5080 --idx $idx --replicas 1
+            dgraph zero --my=$(hostname -f):5080 --peer dgraph-zero-0.dgraph-zero.default.svc.cluster.local:5080 --idx $idx --replicas 1
           fi
       terminationGracePeriodSeconds: 60
   updateStrategy:
@@ -182,7 +180,7 @@ spec:
         - "-c"
         - |
           set -ex
-          dgraph server --my=$(hostname -f):7080 --lru_mb 1024 --zero dgraph-zero-0.dgraph-zero.deernation.svc.cluster.local:5080
+          dgraph server --my=$(hostname -f):7080 --lru_mb 1024 --zero dgraph-zero-0.dgraph-zero.default.svc.cluster.local:5080
       terminationGracePeriodSeconds: 60
       volumes:
       - name: datadir
